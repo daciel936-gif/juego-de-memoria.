@@ -7,9 +7,9 @@
 <body>
 
     <h1>Juego de memoria</h1>
-    <p id="mensaje">Presiona comenzar para jugar.</p>
 
     <h2 id="nivel">Nivel 1</h2>
+    <p id="mensaje">Presiona comenzar para jugar.</p>
 
     <button onclick="comenzar()">Comenzar</button>
 
@@ -17,14 +17,32 @@
 
     <p>Repite el orden:</p>
 
+    <h3>Colores</h3>
     <button onclick="elegir('🔴')">🔴</button>
     <button onclick="elegir('🔵')">🔵</button>
     <button onclick="elegir('🟢')">🟢</button>
     <button onclick="elegir('🟡')">🟡</button>
 
+    <h3>Números</h3>
+    <button onclick="elegir('1')">1</button>
+    <button onclick="elegir('2')">2</button>
+    <button onclick="elegir('3')">3</button>
+    <button onclick="elegir('4')">4</button>
+
+    <h3>Símbolos</h3>
+    <button onclick="elegir('★')">★</button>
+    <button onclick="elegir('♥')">♥</button>
+    <button onclick="elegir('▲')">▲</button>
+    <button onclick="elegir('●')">●</button>
+
     <script>
 
-        let colores = ["🔴", "🔵", "🟢", "🟡"];
+        let elementos = [
+            "🔴", "🔵", "🟢", "🟡",
+            "1", "2", "3", "4",
+            "★", "♥", "▲", "●"
+        ];
+
         let secuencia = [];
         let respuesta = [];
         let nivel = 1;
@@ -36,12 +54,12 @@
             jugando = false;
 
             for (let i = 0; i < Math.pow(2, nivel); i++) {
-                let numero = Math.floor(Math.random() * 4);
-                secuencia.push(colores[numero]);
+                let numero = Math.floor(Math.random() * elementos.length);
+                secuencia.push(elementos[numero]);
             }
 
             document.getElementById("nivel").innerText = "Nivel " + nivel;
-            document.getElementById("mensaje").innerText = "Observa los emojis";
+            document.getElementById("mensaje").innerText = "Observa los elementos";
             document.getElementById("secuencia").innerText = secuencia.join(" ");
 
             setTimeout(function() {
@@ -51,10 +69,10 @@
             }, 5000);
         }
 
-        function elegir(color) {
+        function elegir(elemento) {
             if (!jugando) return;
 
-            respuesta.push(color);
+            respuesta.push(elemento);
 
             document.getElementById("secuencia").innerText = respuesta.join(" ");
 
