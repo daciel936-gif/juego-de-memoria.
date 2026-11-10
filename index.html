@@ -1,92 +1,79 @@
+
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juego de memoria</title>
+    <title>Juego de memoria</title>
 </head>
 <body>
-  <h1>Juego de memoria</h1>
-  <p>Observa la secuencia durante 5 segundos y luego repítela en el mismo orden.</p>
-  <p id="nivel">Nivel: 1</p>
-  <p id="mensaje">Presiona "Comenzar" para jugar.</p>
 
-  <h2 id="secuencia"></h2>
+    <h1>Juego de memoria</h1>
+    <p id="mensaje">Presiona comenzar para jugar.</p>
 
-  <button id="comenzar" onclick="comenzarJuego()">Comenzar</button>
+    <h2 id="nivel">Nivel 1</h2>
 
-  <h3>Selecciona los colores:</h3>
-  <div id="botones">
-    <button onclick="elegirColor('🔴')">🔴</button>
-    <button onclick="elegirColor('🔵')">🔵</button>
-    <button onclick="elegirColor('🟢')">🟢</button>
-    <button onclick="elegirColor('🟡')">🟡</button>
-    <button onclick="elegirColor('🟣')">🟣</button>
-    <button onclick="elegirColor('🟠')">🟠</button>
-  </div>
+    <button onclick="comenzar()">Comenzar</button>
 
-  <script>
-    const colores = ["🔴", "🔵", "🟢", "🟡", "🟣", "🟠"];
-    let nivel = 1;
-    let secuencia = [];
-    let respuesta = [];
-    let jugando = false;
-    let temporizador;
+    <h2 id="secuencia"></h2>
 
-    function comenzarJuego() {
-      clearTimeout(temporizador);
-      secuencia = [];
-      respuesta = [];
-      jugando = false;
+    <p>Repite el orden:</p>
 
-      const cantidad = 2 ** nivel;
-      for (let i = 0; i < cantidad; i++) {
-        const posicion = Math.floor(Math.random() * colores.length);
-        secuencia.push(colores[posicion]);
-      }
+    <button onclick="elegir('🔴')">🔴</button>
+    <button onclick="elegir('🔵')">🔵</button>
+    <button onclick="elegir('🟢')">🟢</button>
+    <button onclick="elegir('🟡')">🟡</button>
 
-      document.getElementById("nivel").textContent = "Nivel: " + nivel;
-      document.getElementById("mensaje").textContent =
-        "¡Observa la secuencia! Tienes 5 segundos.";
-      document.getElementById("secuencia").textContent = secuencia.join(" ");
+    <script>
 
-      document.getElementById("comenzar").disabled = true;
-      document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = true);
+        let colores = ["🔴", "🔵", "🟢", "🟡"];
+        let secuencia = [];
+        let respuesta = [];
+        let nivel = 1;
+        let jugando = false;
 
-      temporizador = setTimeout(() => {
-        document.getElementById("secuencia").textContent = "";
-        document.getElementById("mensaje").textContent =
-          "Ahora repite la secuencia haciendo clic en los colores.";
-        jugando = true;
-        document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = false);
-      }, 5000);
-    }
+        function comenzar() {
+            secuencia = [];
+            respuesta = [];
+            jugando = false;
 
-    function elegirColor(color) {
-      if (!jugando) return;
+            for (let i = 0; i < Math.pow(2, nivel); i++) {
+                let numero = Math.floor(Math.random() * 4);
+                secuencia.push(colores[numero]);
+            }
 
-      respuesta.push(color);
-      const posicion = respuesta.length - 1;
+            document.getElementById("nivel").innerText = "Nivel " + nivel;
+            document.getElementById("mensaje").innerText = "Observa los emojis";
+            document.getElementById("secuencia").innerText = secuencia.join(" ");
 
-      if (respuesta[posicion] !== secuencia[posicion]) {
-        jugando = false;
-        document.getElementById("mensaje").textContent =
-          "¡Ups! Te equivocaste. Inténtalo de nuevo en el mismo nivel.";
-        document.getElementById("comenzar").disabled = false;
-        document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = true);
-        return;
-      }
+            setTimeout(function() {
+                document.getElementById("secuencia").innerText = "";
+                document.getElementById("mensaje").innerText = "¡Tu turno! Repite la secuencia.";
+                jugando = true;
+            }, 5000);
+        }
 
-      if (respuesta.length === secuencia.length) {
-        jugando = false;
-        nivel++;
-        document.getElementById("nivel").textContent = "Nivel: " + nivel;
-        document.getElementById("mensaje").textContent =
-          "¡Muy bien! Completaste el nivel. Presiona Comenzar para continuar.";
-        document.getElementById("comenzar").disabled = false;
-        document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = true);
-      }
-    }
-  </script>
+        function elegir(color) {
+            if (!jugando) return;
+
+            respuesta.push(color);
+
+            document.getElementById("secuencia").innerText = respuesta.join(" ");
+
+            let posicion = respuesta.length - 1;
+
+            if (respuesta[posicion] != secuencia[posicion]) {
+                document.getElementById("mensaje").innerText = "¡Te equivocaste! Intenta nuevamente.";
+                jugando = false;
+                return;
+            }
+
+            if (respuesta.length == secuencia.length) {
+                document.getElementById("mensaje").innerText = "¡Excelente! Nivel completado.";
+                jugando = false;
+                nivel++;
+            }
+        }
+
+    </script>
+
 </body>
 </html>
