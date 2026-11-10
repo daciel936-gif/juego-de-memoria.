@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de memoria</title>
+</head>
+<body>
+  <h1>Juego de memoria</h1>
+  <p>Observa la secuencia durante 5 segundos y luego repítela en el mismo orden.</p>
+  <p id="nivel">Nivel: 1</p>
+  <p id="mensaje">Presiona "Comenzar" para jugar.</p>
+
+  <h2 id="secuencia"></h2>
+
+  <button id="comenzar" onclick="comenzarJuego()">Comenzar</button>
+
+  <h3>Selecciona los colores:</h3>
+  <div id="botones">
+    <button onclick="elegirColor('🔴')">🔴</button>
+    <button onclick="elegirColor('🔵')">🔵</button>
+    <button onclick="elegirColor('🟢')">🟢</button>
+    <button onclick="elegirColor('🟡')">🟡</button>
+    <button onclick="elegirColor('🟣')">🟣</button>
+    <button onclick="elegirColor('🟠')">🟠</button>
+  </div>
+
+  <script>
+    const colores = ["🔴", "🔵", "🟢", "🟡", "🟣", "🟠"];
+    let nivel = 1;
+    let secuencia = [];
+    let respuesta = [];
+    let jugando = false;
+    let temporizador;
+
+    function comenzarJuego() {
+      clearTimeout(temporizador);
+      secuencia = [];
+      respuesta = [];
+      jugando = false;
+
+      const cantidad = 2 ** nivel;
+      for (let i = 0; i < cantidad; i++) {
+        const posicion = Math.floor(Math.random() * colores.length);
+        secuencia.push(colores[posicion]);
+      }
+
+      document.getElementById("nivel").textContent = "Nivel: " + nivel;
+      document.getElementById("mensaje").textContent =
+        "¡Observa la secuencia! Tienes 5 segundos.";
+      document.getElementById("secuencia").textContent = secuencia.join(" ");
+
+      document.getElementById("comenzar").disabled = true;
+      document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = true);
+
+      temporizador = setTimeout(() => {
+        document.getElementById("secuencia").textContent = "";
+        document.getElementById("mensaje").textContent =
+          "Ahora repite la secuencia haciendo clic en los colores.";
+        jugando = true;
+        document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = false);
+      }, 5000);
+    }
+
+    function elegirColor(color) {
+      if (!jugando) return;
+
+      respuesta.push(color);
+      const posicion = respuesta.length - 1;
+
+      if (respuesta[posicion] !== secuencia[posicion]) {
+        jugando = false;
+        document.getElementById("mensaje").textContent =
+          "¡Ups! Te equivocaste. Inténtalo de nuevo en el mismo nivel.";
+        document.getElementById("comenzar").disabled = false;
+        document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = true);
+        return;
+      }
+
+      if (respuesta.length === secuencia.length) {
+        jugando = false;
+        nivel++;
+        document.getElementById("nivel").textContent = "Nivel: " + nivel;
+        document.getElementById("mensaje").textContent =
+          "¡Muy bien! Completaste el nivel. Presiona Comenzar para continuar.";
+        document.getElementById("comenzar").disabled = false;
+        document.getElementById("botones").querySelectorAll("button").forEach(b => b.disabled = true);
+      }
+    }
+  </script>
+</body>
+</html>
